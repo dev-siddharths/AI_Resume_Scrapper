@@ -1,10 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import "./HomePage.css";
 import skillsimg from "../assets/images/skills.png";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import axios from "axios";
+import PdfDisplay from "./PdfDisplay";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
+  const [file, setFile] = useState(null);
+  const [name, setName] = useState(null);
+  const navigate = useNavigate();
+
+  function handleFile(e) {
+    setFile(e.target.files[0]);
+  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("resume", file);
+    try {
+      const res = await axios.post("http://localhost:3001", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setName(res.data.data.name.first);
+      console.log(res.data.data.emails[0]);
+      console.log(name);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <>
       <title>HomePage</title>
@@ -20,9 +48,14 @@ const HomePage = () => {
               <p className="lead">
                 Automate your resume filtering process with AI.
               </p>
-              <a href="#get-started" className="btn btn-dark btn-lg">
-                Upload Resume
-              </a>
+              <form onSubmit={handleSubmit}>
+                <input type="file" accept=".pdf" onChange={handleFile} />
+                <input
+                  type="submit"
+                  value="Upload Resume"
+                  className="btn btn-dark btn-lg"
+                />
+              </form>
             </div>
           </div>
 
