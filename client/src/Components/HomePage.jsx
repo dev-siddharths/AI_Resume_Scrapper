@@ -25,9 +25,7 @@ const HomePage = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      setName(res.data.data.name.first);
-      console.log(res.data.data.emails[0]);
-      console.log(name);
+      navigate("/pdfFile", { state: res.data });
     } catch (err) {
       console.error(err);
     }
