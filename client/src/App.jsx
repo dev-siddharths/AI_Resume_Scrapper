@@ -6,6 +6,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import PdfDisplay from "./Components/PdfDisplay";
+import DownloadPdf from "./Components/DownloadPdf";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,11 @@ const router = createBrowserRouter([
     path: "/pdfFile",
     element: <PdfDisplay />,
   },
+  {
+    path: "/downloadPdf",
+    element:<DownloadPdf />,
+  },
+  
 ]);
 
 function App() {

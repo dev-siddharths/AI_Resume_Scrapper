@@ -25,7 +25,7 @@ app.post("/", upload, async (req, res) => {
       const fileBuffer = req.file.buffer;
       const formData = new FormData();
       formData.append("file", fileBuffer, {
-        filename: "resume.pdf",
+        filename: req.file.originalname,
         contentType: "application/pdf",
       });
       const affinda = await axios.post(
@@ -38,7 +38,8 @@ app.post("/", upload, async (req, res) => {
           },
         }
       );
-      res.json(affinda.data);
+      res.json({data: affinda.data,filename: req.file.originalname});
+      
     }
   } catch (err) {
     console.error(err);
