@@ -15,7 +15,7 @@ app.listen(3001, () => {
 const memory = multer.memoryStorage();
 const upload = multer({ storage: memory }).single("resume");
 const apiKey = process.env.AFFINDA_API_KEY;
-console.log(apiKey);
+//console.log(apiKey);
 app.post("/", upload, async (req, res) => {
   //   if (!req.file) {
   //     return res.status(400).json({ error: "No file uploaded" });
@@ -38,8 +38,7 @@ app.post("/", upload, async (req, res) => {
           },
         }
       );
-      res.json({data: affinda.data,filename: req.file.originalname});
-      
+      res.json({ data: affinda.data, filename: req.file.originalname });
     }
   } catch (err) {
     console.error(err);

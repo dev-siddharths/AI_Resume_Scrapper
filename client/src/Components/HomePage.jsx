@@ -19,13 +19,58 @@ const HomePage = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("resume", file);
+
     try {
       const res = await axios.post("http://localhost:3001", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      navigate("/pdfFile", { state: {data:res.data.data,filename:res.data.filename} });
+      console.log(res.data);
+      const extracted = res.data.data.data;
+
+      const name = extracted.name?.raw || "";
+      const email = extracted.emails?.[0] || "N/A";
+      const phone = extracted.phoneNumbers?.[0] || "N/A";
+      const dob = extracted.dateOfBirth || "N/A";
+      const address = extracted.location?.formatted || "N/A";
+      const websites = extracted.websites || [];
+      const objective = extracted.objective || "";
+      const skills = extracted.skills?.map((skill) => skill.name) || [];
+
+      const education =
+        extracted.education?.map((edu) => ({
+          degree: edu.accreditation?.education || "N/A",
+          college: edu.organization || "N/A",
+          completionDate: edu.dates?.completionDate || "N/A",
+        })) || [];
+      console.log(education);
+      const certifications = extracted.certifications || [];
+
+      const projectsSection =
+        extracted.sections?.find(
+          (section) => section.sectionType === "Projects"
+        )?.text || "";
+
+      const workExperience = extracted.workExperience || [];
+      localStorage.setItem(
+        "resumeData",
+        JSON.stringify({
+          name,
+          email,
+          phone,
+          dob,
+          address,
+          websites,
+          objective,
+          skills,
+          education,
+          certifications,
+          projectsSection,
+          workExperience,
+        })
+      );
+      navigate("/pdfFile");
     } catch (err) {
       console.error(err);
     }

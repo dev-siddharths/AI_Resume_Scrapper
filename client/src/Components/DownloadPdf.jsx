@@ -1,42 +1,64 @@
-import React, { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
-import { useRef } from 'react';
-import html2pdf from 'html2pdf.js';
+import React, { useEffect } from "react";
 
+import { useRef } from "react";
+import html2pdf from "html2pdf.js";
+import { useNavigate } from "react-router-dom";
 
 const DownloadPdf = () => {
-  const location = useLocation();
-  const data = location.state;
+  const navigate = useNavigate();
   const pdfRef = useRef(null);
-  const name = data.name;
-  const email = data.email;
-  const phone = data.phone;
-  const dob = data.dob;
-  const address = data.address;
-  const website = data.website;
-  const objective = data.objective;
-  const skills = data.skills;
-  const education = data.education;
-  const institution_college = data.institution_college;
-  const experience = data.experience;
-  const projects = data.projects;
-  const certifications = data.certifications;
-  
+  const resumeData = JSON.parse(localStorage.getItem("resumeData"));
+
+  const name = resumeData?.name || "N/A";
+  const email = resumeData?.email || "N/A";
+  const phone = resumeData?.phone || "N/A";
+  const dob = resumeData?.dob || "N/A";
+  const address = resumeData?.address || "N/A";
+  const websites = resumeData?.websites || [];
+  const objective = resumeData?.objective || "N/A";
+  const skills = resumeData?.skills || [];
+
+  const education = resumeData?.education?.slice(0, 2) || [];
+
+  const projects = resumeData?.projectsSection || "N/A";
+  const experience = resumeData?.workExperience || "N/A";
+  const certifications = resumeData?.certifications || "N/A";
+  const fileName = resumeData?.fileName || "N/A";
+
   useEffect(() => {
     const element = pdfRef.current;
 
     const opt = {
-      
-      filename:     `${data.ogfilename}_structured.pdf`,
-      image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 8 },
-      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      filename: `${fileName}_structured.pdf`,
+      image: { type: "jpeg", quality: 1 },
+      html2canvas: { scale: 4 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
     html2pdf().set(opt).from(element).save();
-  })
-  console.log("Location state:", location.state);
+    navigate("/Homepage");
+  });
+  function forskills() {
+    let result = "";
+    for (let i = 0; i < skills.length; i++) {
+      if (i === skills.length - 1) {
+        result += skills[i] + ".";
+      } else {
+        result += skills[i] + ", ";
+      }
+    }
+    return result;
+  }
   return (
-    <div className="container my-2" ref={pdfRef} style={{fontSize:'1rem',color:"black",fontWeight:"500",fontFamily:"Georgia"}}>
+    <div
+      className="container my-2"
+      ref={pdfRef}
+      style={{
+        fontSize: "0.8rem",
+        color: "black",
+        fontWeight: "500",
+        fontFamily: "Georgia",
+      }}
+    >
       <div className="card">
         <div className="card-body">
           <div className="row">
@@ -57,7 +79,18 @@ const DownloadPdf = () => {
                 <strong>Address:</strong> {address}
               </p>
               <p>
-                <strong>Linkdln/Github</strong> {website}
+                <strong>Linkdln/Github/LeetCode</strong> <br />
+                <a href={websites[0]} target="_blank">
+                  {websites[0]}
+                </a>
+                <br />
+                <a href={websites[1]} target="_blank">
+                  {websites[1]}
+                </a>
+                <br />
+                <a href={websites[2]} target="_blank">
+                  {websites[2]}
+                </a>
               </p>
             </div>
             <div className="col-md-6">
@@ -65,22 +98,36 @@ const DownloadPdf = () => {
                 <strong>Objective:</strong> {objective}
               </p>
               <p>
-                <strong>Education:</strong> {education}
+                <strong>Education:</strong> <br />
+                <strong> Bachelor's Degree:</strong>{" "}
+                <i>
+                  <u>{education[1].degree}</u>
+                </i>{" "}
+                from <u>{education[1].college}</u> <br />
+                <strong> Masters's Degree:</strong>{" "}
+                <i>
+                  <u>{education[0].degree}</u>
+                </i>{" "}
+                from
+                <u> {education[0].college} </u>
               </p>
+
               <p>
-                <strong>Institution:</strong> {institution_college}
-              </p>
-              <p>
-                <strong>Skills:</strong> {skills}
+                <strong>Skills:</strong>
+                <br />
+                {forskills()}
               </p>
             </div>
           </div>
           <div className="row">
             <div className="col-md-12">
-              <p>
-                <strong>Projects:</strong>
-                <pre className="custom-pre">{projects}</pre>
-              </p>
+              <pre className="custom-pre">
+                <strong>
+                  Projects: <br />
+                </strong>
+                {projects}
+              </pre>
+
               <p>
                 <strong>Work Experience:</strong>
                 <pre className="custom-pre">{experience}</pre>
@@ -89,14 +136,12 @@ const DownloadPdf = () => {
                 <strong>Certifications:</strong>
                 <pre className="custom-pre">{certifications}</pre>
               </p>
-              
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-  
-}
+};
 
-export default DownloadPdf
+export default DownloadPdf;

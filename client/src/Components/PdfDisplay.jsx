@@ -6,77 +6,62 @@ import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 
 const PdfDisplay = () => {
-  const location = useLocation();
-  const data = location.state.data;
-  const ogfilename = location.state.filename;
   const navigate = useNavigate();
-  
+  const resumeData = JSON.parse(localStorage.getItem("resumeData"));
+  const name = resumeData?.name || "N/A";
+  const email = resumeData?.email || "N/A";
+  const phone = resumeData?.phone || "N/A";
+  const dob = resumeData?.dob || "N/A";
+  const address = resumeData?.address || "N/A";
+  const websites = resumeData?.websites || [];
+  const objective = resumeData?.objective || "N/A";
+  const skills = resumeData?.skills || [];
 
-  const name = `${data.data.name?.first || ""} ${data.data.name?.last || ""}`;
-  const email = data.data.emails?.[0] || "Not Defined";
-  const phone = data.data.phoneNumbers?.[0] || "Not Defined";
-  const dob = data.data.dateOfBirth || "Not Defined";
-  const address = data.data.location?.formatted || "Not Defined";
-  const website = data.data.websites?.[0] || "Not Defined";
-  const objective = data.data.objective || "Not Defined";
-  const skills =
-    data.data.skills?.map((skill) => skill.name).join(", ") || "Not Defined";
-  const education =
-    data.data.education?.[0]?.accreditation?.education || "Not Defined";
+  const education = resumeData?.education?.slice(0, 2) || [];
 
-  const institution_college =
-    data.data.education?.[0]?.organization || "Not Defined";
-  const workExpSection = data.data.sections?.find(
-    (sec) => sec.sectionType === "WorkExperience"
-  );
-  const experience = workExpSection?.text || "Not Defined";
+  const projects = resumeData?.projectsSection || "N/A";
+  const experience = resumeData?.workExperience || "N/A";
+  const certifications = resumeData?.certifications || "N/A";
+  const fileName = resumeData?.fileName || "N/A";
 
-  const projectsSection = data.data.sections?.find(
-    (sec) => sec.sectionType === "Projects"
-  );
-  const projects = projectsSection?.text || "Not Defined";
-
-  const certSection = data.data.sections?.find(
-    (sec) => sec.sectionType === "Certifications"
-  );
-  const certifications = certSection?.text || "Not Defined";
-
-  const rawText = data.data.sections?.[0]?.text || "";
-  const linkedInMatch = rawText.match(
-    /https?:\/\/(www\.)?linkedin\.com\/[^\s)]+/i
-  );
-  const githubMatch = rawText.match(/https?:\/\/(www\.)?github\.com\/[^\s)]+/i);
-
-  const linkedIn = linkedInMatch ? linkedInMatch[0] : "Not Found";
-  const github = githubMatch ? githubMatch[0] : "Not Found";
+  function exp() {
+    let result = "";
+    for (let i = 0; i < experience.length; i++) {
+      result +=
+        "<b>JobTitle:</b> " +
+        experience[i].jobTitle +
+        "<br>" +
+        "<b>Organization:</b> " +
+        experience[i].organization +
+        "<br>" +
+        "<b>Start-Date: </b>" +
+        experience[i].dates?.startDate +
+        "<br><b>End-Date: </b>" +
+        experience[i].dates?.endDate;
+    }
+    return result;
+  }
+  console.log(experience.length);
 
   function pdfBtn() {
-    navigate("/downloadPdf", {
-      state: {
-        name: name,
-        email: email,
-        phone: phone,
-        dob: dob,
-        address: address,
-        website: website,
-        objective: objective,
-        skills: skills,
-        education: education,
-        institution_college: institution_college,
-        projects: projects,
-        experience: experience,
-        certifications: certifications,
-        linkedIn: linkedIn,
-        github: github,
-        ogfilename: ogfilename,
-      },
-    });
+    navigate("/downloadPdf");
   }
-
+  function forskills() {
+    let result = "";
+    for (let i = 0; i < skills.length; i++) {
+      if (i === skills.length - 1) {
+        result += skills[i] + ".";
+      } else {
+        result += skills[i] + ", ";
+      }
+    }
+    return result;
+  }
   return (
-    <div className="container ">
-    <Navbar/>
-      <h3 className="text-center m-4">Resume Details</h3> <button onClick={pdfBtn}>Download Pdf</button>
+    <div className="container">
+      <Navbar />
+      <h3 className="text-center m-4">Resume Details</h3>{" "}
+      <button onClick={pdfBtn}>Download Pdf</button>
       <div className="card">
         <div className="card-body">
           <div className="row">
@@ -97,7 +82,18 @@ const PdfDisplay = () => {
                 <strong>Address:</strong> {address}
               </p>
               <p>
-                <strong>Linkdln/Github</strong> {website}
+                <strong>Linkdln/Github/LeetCode</strong> <br />
+                <a href={websites[0]} target="_blank">
+                  {websites[0]}
+                </a>
+                <br />
+                <a href={websites[1]} target="_blank">
+                  {websites[1]}
+                </a>
+                <br />
+                <a href={websites[2]} target="_blank">
+                  {websites[2]}
+                </a>
               </p>
             </div>
             <div className="col-md-6">
@@ -105,31 +101,45 @@ const PdfDisplay = () => {
                 <strong>Objective:</strong> {objective}
               </p>
               <p>
-                <strong>Education:</strong> {education}
+                <strong>Education:</strong> <br />
+                <i>
+                  <u>{education[1].degree}</u>
+                </i>{" "}
+                from <u>{education[1].college}</u> <br />
+                <i>
+                  <u>{education[0].degree}</u>
+                </i>{" "}
+                from
+                <u> {education[0].college} </u>
               </p>
+
               <p>
-                <strong>Institution:</strong> {institution_college}
-              </p>
-              <p>
-                <strong>Skills:</strong> {skills}
+                <strong>Skills:</strong>
+                <br />
+                {forskills()}
               </p>
             </div>
           </div>
           <div className="row">
             <div className="col-md-12">
-              <p>
-                <strong>Projects:</strong>
-                <pre className="custom-pre">{projects}</pre>
-              </p>
+              <pre className="custom-pre">
+                <strong>
+                  Projects: <br />
+                </strong>
+                {projects}
+              </pre>
+
               <p>
                 <strong>Work Experience:</strong>
-                <pre className="custom-pre">{experience}</pre>
+                <pre
+                  className="custom-pre"
+                  dangerouslySetInnerHTML={{ __html: exp() }}
+                ></pre>
               </p>
               <p>
                 <strong>Certifications:</strong>
                 <pre className="custom-pre">{certifications}</pre>
               </p>
-              
             </div>
           </div>
         </div>
