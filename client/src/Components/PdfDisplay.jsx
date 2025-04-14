@@ -57,6 +57,15 @@ const PdfDisplay = () => {
     }
     return result;
   }
+
+  function forCertifications() {
+    let result = "";
+    for (let i = 0; i < certifications.length; i++) {
+      result += certifications[i] + "<br>";
+    }
+    return result;
+  }
+  console.log(certifications);
   return (
     <div className="container">
       <Navbar />
@@ -138,7 +147,12 @@ const PdfDisplay = () => {
               </p>
               <p>
                 <strong>Certifications:</strong>
-                <pre className="custom-pre">{certifications}</pre>
+                <pre
+                  className="custom-pre"
+                  dangerouslySetInnerHTML={{ __html: forCertifications() }}
+                >
+                  {}
+                </pre>
               </p>
             </div>
           </div>

@@ -29,7 +29,7 @@ const DownloadPdf = () => {
     const element = pdfRef.current;
 
     const opt = {
-      filename: `${fileName}_structured.pdf`,
+      filename: `Resume_structured.pdf`,
       image: { type: "jpeg", quality: 1 },
       html2canvas: { scale: 4 },
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
@@ -37,6 +37,25 @@ const DownloadPdf = () => {
     html2pdf().set(opt).from(element).save();
     navigate("/Homepage");
   });
+
+  function exp() {
+    let result = "";
+    for (let i = 0; i < experience.length; i++) {
+      result +=
+        "<b>JobTitle:</b> " +
+        experience[i].jobTitle +
+        "<br>" +
+        "<b>Organization:</b> " +
+        experience[i].organization +
+        "<br>" +
+        "<b>Start-Date: </b>" +
+        experience[i].dates?.startDate +
+        "<br><b>End-Date: </b>" +
+        experience[i].dates?.endDate;
+    }
+    return result;
+  }
+
   function forskills() {
     let result = "";
     for (let i = 0; i < skills.length; i++) {
@@ -45,6 +64,14 @@ const DownloadPdf = () => {
       } else {
         result += skills[i] + ", ";
       }
+    }
+    return result;
+  }
+
+  function forCertifications() {
+    let result = "";
+    for (let i = 0; i < certifications.length; i++) {
+      result += certifications[i] + "<br>";
     }
     return result;
   }
@@ -130,11 +157,17 @@ const DownloadPdf = () => {
 
               <p>
                 <strong>Work Experience:</strong>
-                <pre className="custom-pre">{experience}</pre>
+                <pre
+                  className="custom-pre"
+                  dangerouslySetInnerHTML={{ __html: exp() }}
+                ></pre>
               </p>
               <p>
                 <strong>Certifications:</strong>
-                <pre className="custom-pre">{certifications}</pre>
+                <pre
+                  className="custom-pre"
+                  dangerouslySetInnerHTML={{ __html: forCertifications() }}
+                ></pre>
               </p>
             </div>
           </div>
