@@ -21,7 +21,7 @@ const HomePage = () => {
     formData.append("resume", file);
 
     try {
-      const res = await axios.post("airesumescrapper-production.up.railway.app", formData, {
+      const res = await axios.post("https://airesumescrapper-production.up.railway.app/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
