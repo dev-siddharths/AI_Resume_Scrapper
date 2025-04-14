@@ -6,13 +6,7 @@ const FormData = require("form-data");
 require("dotenv").config();
 
 const app = express();
-app.use(
-  cors({
-    origin:
-      "https://ai-resume-scrapper-cfk4onk67-dirrtycoders-projects.vercel.app", // Your frontend URL
-    credentials: true,
-  })
-);
+app.use(cors());
 
 app.listen(3001, () => {
   console.log("Server Started");
