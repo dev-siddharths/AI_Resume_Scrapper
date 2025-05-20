@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [file, setFile] = useState(null);
-  const [name, setName] = useState(null);
+  const [job_desc, setJobdesc] = useState(null);
   const navigate = useNavigate();
 
   function handleFile(e) {
@@ -21,7 +21,7 @@ const HomePage = () => {
     formData.append("resume", file);
 
     try {
-      const res = await axios.post("https://airesumescrapper-production.up.railway.app/", formData, {
+      const res = await axios.post("http://localhost:3001", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -70,6 +70,7 @@ const HomePage = () => {
           workExperience,
         })
       );
+      localStorage.setItem("job_desc", job_desc);
       navigate("/pdfFile");
     } catch (err) {
       console.error(err);
@@ -93,6 +94,24 @@ const HomePage = () => {
               </p>
               <form onSubmit={handleSubmit}>
                 <input type="file" accept=".pdf" onChange={handleFile} />
+                <br />
+                <br />
+                <h5>Enter the Job Description</h5>
+                <textarea
+                  style={{
+                    displayb: "block",
+                    width: "50%",
+                    height: "50px",
+                    marginTop: "1rem",
+                  }}
+                  name=""
+                  id=""
+                  onChange={(e) => {
+                    setJobdesc(e.target.value);
+                  }}
+                ></textarea>
+                <br />
+                <br />
                 <input
                   type="submit"
                   value="Upload Resume"

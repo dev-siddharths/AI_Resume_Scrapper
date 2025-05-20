@@ -128,12 +128,12 @@ const DownloadPdf = () => {
                 <strong>Education:</strong> <br />
                 <strong> Bachelor's Degree:</strong>{" "}
                 <i>
-                  <u>{education[1].degree}</u>
+                  <u>{education[1]?.degree}</u>
                 </i>{" "}
-                from <u>{education[1].college}</u> <br />
+                from <u>{education[1]?.college}</u> <br />
                 <strong> Masters's Degree:</strong>{" "}
                 <i>
-                  <u>{education[0].degree}</u>
+                  <u>{education[0]?.degree}</u>
                 </i>{" "}
                 from
                 <u> {education[0].college} </u>

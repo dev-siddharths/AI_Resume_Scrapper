@@ -1,11 +1,12 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./PdfDisplay.css"; // Import custom CSS file
+import "./PdfDisplay.css";
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const PdfDisplay = () => {
+  const [match_per, setMatchPer] = React.useState("N/A");
   const navigate = useNavigate();
   const resumeData = JSON.parse(localStorage.getItem("resumeData"));
   const name = resumeData?.name || "N/A";
@@ -16,14 +17,13 @@ const PdfDisplay = () => {
   const websites = resumeData?.websites || [];
   const objective = resumeData?.objective || "N/A";
   const skills = resumeData?.skills || [];
-
-  const education = resumeData?.education?.slice(0, 2) || [];
-
+  const education = resumeData?.education?.slice(0, 2) || ["N/A", "N/A"];
   const projects = resumeData?.projectsSection || "N/A";
   const experience = resumeData?.workExperience || "N/A";
   const certifications = resumeData?.certifications || "N/A";
   const fileName = resumeData?.fileName || "N/A";
 
+  console.log(match_per);
   function exp() {
     let result = "";
     for (let i = 0; i < experience.length; i++) {
@@ -37,15 +37,16 @@ const PdfDisplay = () => {
         "<b>Start-Date: </b>" +
         experience[i].dates?.startDate +
         "<br><b>End-Date: </b>" +
-        experience[i].dates?.endDate;
+        experience[i].dates?.endDate +
+        "<br><br>";
     }
     return result;
   }
-  console.log(experience.length);
 
   function pdfBtn() {
     navigate("/downloadPdf");
   }
+
   function forskills() {
     let result = "";
     for (let i = 0; i < skills.length; i++) {
@@ -65,13 +66,47 @@ const PdfDisplay = () => {
     }
     return result;
   }
-  console.log(certifications);
+
+  const job_desc = localStorage.getItem("job_desc");
+
+  useEffect(() => {
+    const fetchMatchPer = async () => {
+      try {
+        const response = await axios.post(
+          "https://openrouter.ai/api/v1/chat/completions",
+          {
+            model: "openai/gpt-3.5-turbo",
+            messages: [
+              {
+                role: "user",
+                content: `This is my resume data which basically consists of my skills:${skills}, education:${education}, certifications:${certifications}, projects:${projects}. Please tell me the percentage match of my resume to the job description. The job description is: ${job_desc}. Just give me number of the match percentage nothing else.`,
+              },
+            ],
+          },
+          {
+            headers: {
+              Authorization: `Bearer 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`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        setMatchPer(response.data.choices[0].message.content || "N/A");
+        console.log(response);
+      } catch (error) {
+        console.error("API request failed:", error);
+      }
+    };
+    fetchMatchPer();
+  }, []);
+
   return (
-    <div className="container">
+    <div className="container py-5">
       <Navbar />
-      <h3 className="text-center m-4">Resume Details</h3>{" "}
-      <button onClick={pdfBtn}>Download Pdf</button>
-      <div className="card">
+      <h3 className="text-center mb-4">Resume Details</h3>
+      <button className="btn btn-success mb-4" onClick={pdfBtn}>
+        Download PDF
+      </button>
+      <div className="card shadow-lg p-4 mb-4 rounded-4 border-primary">
         <div className="card-body">
           <div className="row">
             <div className="col-md-6">
@@ -90,19 +125,22 @@ const PdfDisplay = () => {
               <p>
                 <strong>Address:</strong> {address}
               </p>
-              <p>
-                <strong>Linkdln/Github/LeetCode</strong> <br />
-                <a href={websites[0]} target="_blank">
-                  {websites[0]}
-                </a>
+              <p className="mb-2">
+                <strong>LinkedIn/GitHub/LeetCode:</strong>
                 <br />
-                <a href={websites[1]} target="_blank">
-                  {websites[1]}
-                </a>
-                <br />
-                <a href={websites[2]} target="_blank">
-                  {websites[2]}
-                </a>
+                {websites.map((site, index) =>
+                  site ? (
+                    <a
+                      key={index}
+                      href={site}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="d-block text-decoration-underline text-primary"
+                    >
+                      {site}
+                    </a>
+                  ) : null
+                )}
               </p>
             </div>
             <div className="col-md-6">
@@ -112,16 +150,15 @@ const PdfDisplay = () => {
               <p>
                 <strong>Education:</strong> <br />
                 <i>
-                  <u>{education[1].degree}</u>
+                  <u>{education[1]?.degree}</u>
                 </i>{" "}
-                from <u>{education[1].college}</u> <br />
+                from <u>{education[1]?.college}</u>
+                <br />
                 <i>
-                  <u>{education[0].degree}</u>
+                  <u>{education[0]?.degree}</u>
                 </i>{" "}
-                from
-                <u> {education[0].college} </u>
+                from <u>{education[0]?.college}</u>
               </p>
-
               <p>
                 <strong>Skills:</strong>
                 <br />
@@ -132,28 +169,40 @@ const PdfDisplay = () => {
           <div className="row">
             <div className="col-md-12">
               <pre className="custom-pre">
-                <strong>
-                  Projects: <br />
-                </strong>
+                <strong>Projects:</strong>
+                <br />
                 {projects}
               </pre>
-
-              <p>
-                <strong>Work Experience:</strong>
-                <pre
-                  className="custom-pre"
-                  dangerouslySetInnerHTML={{ __html: exp() }}
-                ></pre>
-              </p>
-              <p>
-                <strong>Certifications:</strong>
-                <pre
-                  className="custom-pre"
-                  dangerouslySetInnerHTML={{ __html: forCertifications() }}
-                >
-                  {}
-                </pre>
-              </p>
+              <strong>Work Experience:</strong>
+              <pre
+                className="custom-pre"
+                dangerouslySetInnerHTML={{ __html: exp() }}
+              ></pre>
+              <strong>Certifications:</strong>
+              <pre
+                className="custom-pre"
+                dangerouslySetInnerHTML={{ __html: forCertifications() }}
+              ></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-md-12">
+          <h4>Percentage Match to Job Description</h4>
+          <p>Your resume matches the job description by {match_per}.</p>
+          <div
+            className="progress"
+            role="progressbar"
+            aria-valuenow={match_per}
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            <div
+              className="progress-bar bg-success"
+              style={{ width: `${match_per}` }}
+            >
+              {match_per}
             </div>
           </div>
         </div>
