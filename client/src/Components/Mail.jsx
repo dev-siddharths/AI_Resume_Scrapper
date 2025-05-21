@@ -31,13 +31,16 @@ const Mail = () => {
   function spinnerLoading() {
     if (loading) {
       return (
-        <div
-          className="spinner-grow"
-          role="status"
-          style={{ width: "3rem", height: "3rem" }}
-        >
-          <span className="visually-hidden">Loading...</span>
-        </div>
+        <>
+          <h1 style={{ textAlign: "center" }}>Mail is being sent...........</h1>
+          <div
+            className="spinner-grow"
+            role="status"
+            style={{ width: "3rem", height: "3rem" }}
+          >
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </>
       );
     }
   }
@@ -127,7 +130,6 @@ const Mail = () => {
         fontFamily: "Georgia",
       }}
     >
-      <h1 style={{ textAlign: "center" }}>Mail is being sent...........</h1>
       {spinnerLoading()}
       <div className="card">
         <div className="card-body">
