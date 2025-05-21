@@ -1,5 +1,5 @@
 import React from "react";
-
+import "./Navbar.css";
 const Navbar = () => {
   return (
     <>
@@ -7,7 +7,7 @@ const Navbar = () => {
         className="navbar navbar-expand-lg bg-body-tertiary p-3 shadow-lg"
         style={{ borderRadius: "1rem" }}
       >
-        <a className="navbar-brand" href="#">
+        <a className="navabar" href="/homepage">
           Resume Scrapper
         </a>
         <button
@@ -25,26 +25,9 @@ const Navbar = () => {
           className=" justify-content-end collapse navbar-collapse"
           id="navbarNav"
         >
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#">
-                Home
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                Upload Resume
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                About
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link">Contact</a>
-            </li>
-          </ul>
+          <h4 style={{ margin: "0px", padding: "0px", fontFamily: "poppins" }}>
+            <i>Scan Resumes. Find Talent. Fast.</i>
+          </h4>
         </div>
       </nav>
     </>

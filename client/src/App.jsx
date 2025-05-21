@@ -8,6 +8,7 @@ import {
 import PdfDisplay from "./Components/PdfDisplay";
 import DownloadPdf from "./Components/DownloadPdf";
 import Limitations from "./Components/Limitations";
+import Mail from "./Components/Mail";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/limitations",
     element: <Limitations />,
+  },
+  {
+    path: "/mail",
+    element: <Mail />,
   },
 ]);
 

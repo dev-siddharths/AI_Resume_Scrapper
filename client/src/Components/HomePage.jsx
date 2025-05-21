@@ -124,7 +124,7 @@ const HomePage = () => {
                 />
                 <br />
                 <br />
-                <h5>Enter the Job Description</h5>
+                <h4>Enter the Job Description</h4>
                 <textarea
                   style={{
                     displayb: "block",

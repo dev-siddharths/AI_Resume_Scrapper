@@ -7,6 +7,8 @@ import axios from "axios";
 
 const PdfDisplay = () => {
   const [match_per, setMatchPer] = React.useState("N/A");
+  const [showModal, setShowModal] = React.useState(false);
+  const [remail, setRemail] = React.useState("");
   const navigate = useNavigate();
   const resumeData = JSON.parse(localStorage.getItem("resumeData"));
   const name = resumeData?.name || "N/A";
@@ -23,7 +25,6 @@ const PdfDisplay = () => {
   const certifications = resumeData?.certifications || "N/A";
   const fileName = resumeData?.fileName || "N/A";
 
-  console.log(match_per);
   function exp() {
     let result = "";
     for (let i = 0; i < experience.length; i++) {
@@ -49,7 +50,66 @@ const PdfDisplay = () => {
   function limitationsBtn() {
     navigate("/limitations");
   }
-
+  function sendmailbtn() {
+    if (!showModal) return null;
+    return (
+      <>
+        <div className="modal show d-block" tabIndex="-1">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Modal title</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => setShowModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>Enter your Email:</p>
+                <input
+                  type="email"
+                  className="form-control"
+                  name="remail"
+                  id="remail"
+                  onChange={(e) => {
+                    setRemail(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                  onClick={() => setShowModal(false)}
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    navigate("/mail", {
+                      state: {
+                        remail: remail,
+                      },
+                    });
+                    // Send the email using the email address entered in the modal
+                    setShowModal(false);
+                  }}
+                >
+                  Save changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
   function forskills() {
     let result = "";
     for (let i = 0; i < skills.length; i++) {
@@ -73,12 +133,6 @@ const PdfDisplay = () => {
   const job_desc = localStorage.getItem("job_desc");
 
   useEffect(() => {
-    const cachedMatchPer = localStorage.getItem(`match_per_of_${name}`);
-    if (cachedMatchPer) {
-      setMatchPer(cachedMatchPer);
-      console.log("Coming from LS " + cachedMatchPer);
-      return;
-    }
     const fetchMatchPer = async () => {
       try {
         const response = await axios.post(
@@ -88,7 +142,7 @@ const PdfDisplay = () => {
             messages: [
               {
                 role: "user",
-                content: `This is my resume data which basically consists of my skills:${skills}, education:${education}, certifications:${certifications}, projects:${projects}. Please tell me the percentage match of my resume to the job description. The job description is: ${job_desc}. Return your answer in numerical form, that is it should be a number not text. Just a number.`,
+                content: `This is my resume data which basically consists of my skills:${skills}, education:${education}, certifications:${certifications}, projects:${projects}. Please tell me the percentage match of my resume to the job description. The job description is: ${job_desc}. Return your answer in numerical form, that is it should be a number not text. Just a number not even with a % sign just a number.`,
               },
             ],
           },
@@ -100,10 +154,6 @@ const PdfDisplay = () => {
           }
         );
         setMatchPer(response.data.choices[0].message.content || "N/A");
-        localStorage.setItem(
-          `match_per_of_${name}`,
-          response.data.choices[0].message.content || "N/A"
-        );
       } catch (error) {
         console.error("API request failed:", error);
       }
@@ -118,9 +168,16 @@ const PdfDisplay = () => {
       <button className="btn btn-success mb-4 me-2" onClick={pdfBtn}>
         Download PDF
       </button>
-      <button className="btn btn-success mb-4" onClick={limitationsBtn}>
+      <button className="btn btn-success mb-4 me-2" onClick={limitationsBtn}>
         Limitations
       </button>
+      <button
+        className="btn btn-success mb-4"
+        onClick={() => setShowModal(true)}
+      >
+        Send Mail
+      </button>
+      {sendmailbtn()}
       <div className="card shadow-lg p-4 mb-4 rounded-4 border-primary">
         <div className="card-body">
           <div className="row">
@@ -205,7 +262,7 @@ const PdfDisplay = () => {
       <div className="row">
         <div className="col-md-12">
           <h4>Percentage Match to Job Description</h4>
-          <p>Your resume matches the job description by {match_per}%.</p>
+          <p>Your resume matches the job description by {match_per}.</p>
           <div
             className="progress"
             role="progressbar"
@@ -217,7 +274,7 @@ const PdfDisplay = () => {
               className="progress-bar bg-success"
               style={{ width: `${match_per}%` }}
             >
-              {match_per}%
+              {match_per}
             </div>{" "}
           </div>
         </div>

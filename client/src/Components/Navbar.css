@@ -1,0 +1,11 @@
+.navabar:hover {
+  color: red;
+}
+
+.navabar {
+  text-decoration: none;
+  color: black;
+  font-size: 2rem;
+  font-family: poppins;
+  margin-right: 20px;
+}

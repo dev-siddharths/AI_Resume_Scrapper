@@ -1,9 +1,9 @@
 .custom-pre {
-      font-family: inherit; /* Matches the font-family of the body */
-      font-weight: inherit; /* Matches the font-weight of the body */
-      font-size: inherit;
-      background-color: transparent; /* Removes the default gray background of <pre> */
-      border: none; /* Removes the border */
-      padding: 0; /* Removes extra padding */
-      white-space: pre-wrap; /* Ensures long text wraps properly */
-    }
+  font-family: inherit; /* Matches the font-family of the body */
+  font-weight: inherit; /* Matches the font-weight of the body */
+  font-size: inherit;
+  background-color: transparent; /* Removes the default gray background of <pre> */
+  border: none; /* Removes the border */
+  padding: 0; /* Removes extra padding */
+  white-space: pre-wrap; /* Ensures long text wraps properly */
+}
