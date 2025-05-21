@@ -1,25 +1,31 @@
 import React, { useState } from "react";
 import "./HomePage.css";
-import skillsimg from "../assets/images/skills.png";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import axios from "axios";
 import PdfDisplay from "./PdfDisplay";
+import skills_img from "../assets/images/skills_img.png";
+
+import pdf_img from "../assets/images/pdf_img.png";
+import fast_img from "../assets/images/fast_img.png";
+import easytouse_img from "../assets/images/easytouse_img.png";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [file, setFile] = useState(null);
   const [job_desc, setJobdesc] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   function handleFile(e) {
     setFile(e.target.files[0]);
   }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("resume", file);
-
+    setLoading(true);
     try {
       const res = await axios.post("http://localhost:3001", formData, {
         headers: {
@@ -74,8 +80,24 @@ const HomePage = () => {
       navigate("/pdfFile");
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
+
+  function spinner() {
+    if (loading) {
+      return (
+        <div
+          className="spinner-grow"
+          role="status"
+          style={{ width: "3rem", height: "3rem" }}
+        >
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      );
+    }
+  }
 
   return (
     <>
@@ -86,14 +108,20 @@ const HomePage = () => {
             {/* navbar */}
             <Navbar />
           </div>
-          <div className="col-md-12 mt-5 p-3 d-flex flex-column justify-content-center align-items-center">
+          <div className="col-md-12 mt-3 p-3 d-flex flex-column justify-content-center align-items-center">
             <div className="text-center bg-light p-5">
               <h1 className="display-4">Welcome to AI Resume Scrapper</h1>
               <p className="lead">
                 Automate your resume filtering process with AI.
               </p>
               <form onSubmit={handleSubmit}>
-                <input type="file" accept=".pdf" onChange={handleFile} />
+                <input
+                  type="file"
+                  id="fileupload"
+                  className="form-control"
+                  accept=".pdf"
+                  onChange={handleFile}
+                />
                 <br />
                 <br />
                 <h5>Enter the Job Description</h5>
@@ -116,7 +144,9 @@ const HomePage = () => {
                   type="submit"
                   value="Upload Resume"
                   className="btn btn-dark btn-lg"
-                />
+                />{" "}
+                <br /> <br />
+                {spinner()}
               </form>
             </div>
           </div>
@@ -128,14 +158,17 @@ const HomePage = () => {
               <div className="col-md-6 mb-4">
                 <div className="d-flex align-items-center p-3 shadow-sm rounded bg-white">
                   <img
-                    src={skillsimg}
+                    src={skills_img}
                     alt="icon"
                     style={{ width: "50px", height: "50px" }}
                     className="me-3"
                   />
                   <div>
                     <h5 className="mb-1">Extract Skills & More</h5>
-                    <small>Description</small>
+                    <small>
+                      Automatically identifies skills, education, experience,
+                      and more from resumes.
+                    </small>
                   </div>
                 </div>
               </div>
@@ -144,14 +177,14 @@ const HomePage = () => {
               <div className="col-md-6 mb-4">
                 <div className="d-flex align-items-center p-3 shadow-sm rounded bg-white">
                   <img
-                    src={skillsimg}
+                    src={pdf_img}
                     alt="icon"
                     style={{ width: "50px", height: "50px" }}
                     className="me-3"
                   />
                   <div>
-                    <h5 className="mb-1">Supports PDF/DOCX</h5>
-                    <small>Description</small>
+                    <h5 className="mb-1">Supports PDF</h5>
+                    <small>Upload resumes in PDF format with ease</small>
                   </div>
                 </div>
               </div>
@@ -160,14 +193,17 @@ const HomePage = () => {
               <div className="col-md-6 mb-4">
                 <div className="d-flex align-items-center p-3 shadow-sm rounded bg-white">
                   <img
-                    src={skillsimg}
+                    src={fast_img}
                     alt="icon"
                     style={{ width: "50px", height: "50px" }}
                     className="me-3"
                   />
                   <div>
                     <h5 className="mb-1">Fast and Accurate</h5>
-                    <small>Description</small>
+                    <small>
+                      Get quick results with high accuracy using AI-powered
+                      parsing.
+                    </small>
                   </div>
                 </div>
               </div>
@@ -176,14 +212,17 @@ const HomePage = () => {
               <div className="col-md-6 mb-4">
                 <div className="d-flex align-items-center p-3 shadow-sm rounded bg-white">
                   <img
-                    src={skillsimg}
+                    src={easytouse_img}
                     alt="icon"
                     style={{ width: "50px", height: "50px" }}
                     className="me-3"
                   />
                   <div>
                     <h5 className="mb-1">Easy to Use</h5>
-                    <small>Description</small>
+                    <small>
+                      Simple interface that anyone can use without technical
+                      knowledge
+                    </small>
                   </div>
                 </div>
               </div>

@@ -46,6 +46,9 @@ const PdfDisplay = () => {
   function pdfBtn() {
     navigate("/downloadPdf");
   }
+  function limitationsBtn() {
+    navigate("/limitations");
+  }
 
   function forskills() {
     let result = "";
@@ -70,6 +73,12 @@ const PdfDisplay = () => {
   const job_desc = localStorage.getItem("job_desc");
 
   useEffect(() => {
+    const cachedMatchPer = localStorage.getItem(`match_per_of_${name}`);
+    if (cachedMatchPer) {
+      setMatchPer(cachedMatchPer);
+      console.log("Coming from LS " + cachedMatchPer);
+      return;
+    }
     const fetchMatchPer = async () => {
       try {
         const response = await axios.post(
@@ -79,7 +88,7 @@ const PdfDisplay = () => {
             messages: [
               {
                 role: "user",
-                content: `This is my resume data which basically consists of my skills:${skills}, education:${education}, certifications:${certifications}, projects:${projects}. Please tell me the percentage match of my resume to the job description. The job description is: ${job_desc}. Just give me number of the match percentage nothing else.`,
+                content: `This is my resume data which basically consists of my skills:${skills}, education:${education}, certifications:${certifications}, projects:${projects}. Please tell me the percentage match of my resume to the job description. The job description is: ${job_desc}. Return your answer in numerical form, that is it should be a number not text. Just a number.`,
               },
             ],
           },
@@ -91,7 +100,10 @@ const PdfDisplay = () => {
           }
         );
         setMatchPer(response.data.choices[0].message.content || "N/A");
-        console.log(response);
+        localStorage.setItem(
+          `match_per_of_${name}`,
+          response.data.choices[0].message.content || "N/A"
+        );
       } catch (error) {
         console.error("API request failed:", error);
       }
@@ -100,11 +112,14 @@ const PdfDisplay = () => {
   }, []);
 
   return (
-    <div className="container py-5">
+    <div className="container">
       <Navbar />
-      <h3 className="text-center mb-4">Resume Details</h3>
-      <button className="btn btn-success mb-4" onClick={pdfBtn}>
+      <h3 className="text-center mt-5">Resume Details</h3>
+      <button className="btn btn-success mb-4 me-2" onClick={pdfBtn}>
         Download PDF
+      </button>
+      <button className="btn btn-success mb-4" onClick={limitationsBtn}>
+        Limitations
       </button>
       <div className="card shadow-lg p-4 mb-4 rounded-4 border-primary">
         <div className="card-body">
@@ -190,7 +205,7 @@ const PdfDisplay = () => {
       <div className="row">
         <div className="col-md-12">
           <h4>Percentage Match to Job Description</h4>
-          <p>Your resume matches the job description by {match_per}.</p>
+          <p>Your resume matches the job description by {match_per}%.</p>
           <div
             className="progress"
             role="progressbar"
@@ -200,13 +215,14 @@ const PdfDisplay = () => {
           >
             <div
               className="progress-bar bg-success"
-              style={{ width: `${match_per}` }}
+              style={{ width: `${match_per}%` }}
             >
-              {match_per}
-            </div>
+              {match_per}%
+            </div>{" "}
           </div>
         </div>
       </div>
+      <br />
     </div>
   );
 };

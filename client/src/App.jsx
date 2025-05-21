@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import PdfDisplay from "./Components/PdfDisplay";
 import DownloadPdf from "./Components/DownloadPdf";
+import Limitations from "./Components/Limitations";
 
 const router = createBrowserRouter([
   {
@@ -23,9 +24,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/downloadPdf",
-    element:<DownloadPdf />,
+    element: <DownloadPdf />,
   },
-  
+  {
+    path: "/limitations",
+    element: <Limitations />,
+  },
 ]);
 
 function App() {
