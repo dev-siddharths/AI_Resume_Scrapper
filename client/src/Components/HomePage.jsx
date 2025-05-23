@@ -23,6 +23,14 @@ const HomePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!file) {
+      alert("Please upload a PDF resume before submitting!");
+      return;
+    }
+    if (!job_desc) {
+      alert("Please enter the job desciption before submitting!");
+      return;
+    }
     const formData = new FormData();
     formData.append("resume", file);
     setLoading(true);
@@ -32,6 +40,7 @@ const HomePage = () => {
           "Content-Type": "multipart/form-data",
         },
       });
+
       console.log(res.data);
       const extracted = res.data.data.data;
 

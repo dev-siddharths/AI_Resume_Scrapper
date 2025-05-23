@@ -53,16 +53,16 @@ app.post("/", upload, async (req, res) => {
 
 const memory2 = multer.memoryStorage();
 const upload2 = multer({ storage: memory2 }).single("pdf");
-
+const emailKey = process.env.Gmail_Key;
 app.post("/mail", upload2, async (req, res) => {
   const to = req.body.to;
   const pdfBuffer = req.file.buffer;
-  // 🛠️ Configure your email settings
+  // Configure your email settings
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: "siddharthsurve29@gmail.com",
-      pass: "gxhc jcsa lphu ksmb", // Use Gmail App Password, not your real password
+      pass: `${emailKey}`, // Use Gmail App Password, not your real password
     },
   });
 
