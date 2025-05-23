@@ -63,7 +63,7 @@ const Mail = () => {
       try {
         setLoading(true);
         const response = await axios.post(
-          "http://localhost:3001/mail",
+          "https://ai-resume-scrapper.onrender.com/mail",
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
