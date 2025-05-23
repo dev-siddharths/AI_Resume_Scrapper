@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./PdfDisplay.css";
 import Navbar from "./Navbar";
@@ -8,6 +8,8 @@ import axios from "axios";
 const PdfDisplay = () => {
   const [match_per, setMatchPer] = React.useState("N/A");
   const [showModal, setShowModal] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [remail, setRemail] = React.useState("");
   const navigate = useNavigate();
   const resumeData = JSON.parse(localStorage.getItem("resumeData"));
@@ -24,6 +26,20 @@ const PdfDisplay = () => {
   const experience = resumeData?.workExperience || "N/A";
   const certifications = resumeData?.certifications || "N/A";
   const fileName = resumeData?.fileName || "N/A";
+
+  function spinner() {
+    if (loading) {
+      return (
+        <div
+          className="spinner-grow"
+          role="status"
+          style={{ width: "3rem", height: "3rem" }}
+        >
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      );
+    }
+  }
 
   function exp() {
     let result = "";
@@ -135,10 +151,11 @@ const PdfDisplay = () => {
   useEffect(() => {
     const fetchMatchPer = async () => {
       try {
+        setLoading(true);
         const response = await axios.post(
           "https://openrouter.ai/api/v1/chat/completions",
           {
-            model: "openai/gpt-3.5-turbo",
+            model: "qwen/qwen3-30b-a3b:free",
             messages: [
               {
                 role: "user",
@@ -148,7 +165,7 @@ const PdfDisplay = () => {
           },
           {
             headers: {
-              Authorization: `Bearer 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`,
+              Authorization: `Bearer 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`,
               "Content-Type": "application/json",
             },
           }
@@ -156,6 +173,8 @@ const PdfDisplay = () => {
         setMatchPer(response.data.choices[0].message.content || "N/A");
       } catch (error) {
         console.error("API request failed:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchMatchPer();
@@ -277,6 +296,8 @@ const PdfDisplay = () => {
               {match_per}%
             </div>{" "}
           </div>
+          <br />
+          {spinner()}
         </div>
       </div>
       <br />
