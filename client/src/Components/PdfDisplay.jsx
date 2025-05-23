@@ -262,7 +262,7 @@ const PdfDisplay = () => {
       <div className="row">
         <div className="col-md-12">
           <h4>Percentage Match to Job Description</h4>
-          <p>Your resume matches the job description by {match_per}.</p>
+          <p>Your resume matches the job description by {match_per}%.</p>
           <div
             className="progress"
             role="progressbar"
@@ -274,7 +274,7 @@ const PdfDisplay = () => {
               className="progress-bar bg-success"
               style={{ width: `${match_per}%` }}
             >
-              {match_per}
+              {match_per}%
             </div>{" "}
           </div>
         </div>
