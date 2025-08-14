@@ -49,7 +49,9 @@ const Limitations = () => {
           },
           {
             headers: {
-              Authorization: `Bearer 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`,
+              Authorization: `Bearer ${
+                import.meta.env.VITE_OPENROUTER_API_KEY
+              }`,
               "Content-Type": "application/json",
             },
           }
