@@ -35,7 +35,7 @@ const HomePage = () => {
     formData.append("resume", file);
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:3001//", formData, {
+      const res = await axios.post("https://ai-resume-scrapper.onrender.com/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
