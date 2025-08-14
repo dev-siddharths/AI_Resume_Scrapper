@@ -147,38 +147,46 @@ const PdfDisplay = () => {
   }
 
   const job_desc = localStorage.getItem("job_desc");
-
+  const Aiapikey = import.meta.env.ai_apikey;
   useEffect(() => {
     const fetchMatchPer = async () => {
       try {
         setLoading(true);
+
         const response = await axios.post(
           "https://openrouter.ai/api/v1/chat/completions",
           {
-            model: "qwen/qwen3-30b-a3b:free",
+            model: "deepseek/deepseek-chat-v3-0324:free", // ✅ Use DeepSeek V3 0324 (free)
             messages: [
               {
                 role: "user",
-                content: `This is my resume data which basically consists of my skills:${skills}, education:${education}, certifications:${certifications}, projects:${projects}. Please tell me the percentage match of my resume to the job description. The job description is: ${job_desc}. Return your answer in numerical form, that is it should be a number not text. Just a number not even with a % sign just a number.`,
+                content: `This is my resume data which basically consists of my skills: ${skills}, education: ${education}, certifications: ${certifications}, projects: ${projects}.
+              Please tell me the percentage match of my resume to the job description.
+              The job description is: ${job_desc}.
+              Return your answer in numerical form only (no text, no % sign).`,
               },
             ],
           },
           {
             headers: {
-              Authorization: `Bearer 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`,
+              Authorization: `Bearer ${
+                import.meta.env.VITE_OPENROUTER_API_KEY
+              }`, // ✅ Vite way
               "Content-Type": "application/json",
             },
           }
         );
-        setMatchPer(response.data.choices[0].message.content || "N/A");
+
+        setMatchPer(response.data.choices[0].message.content?.trim() || "N/A");
       } catch (error) {
         console.error("API request failed:", error);
       } finally {
         setLoading(false);
       }
     };
+
     fetchMatchPer();
-  }, []);
+  }, []); // ✅ dependencies
 
   return (
     <div className="container">
