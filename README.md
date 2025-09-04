@@ -38,6 +38,8 @@ Limitations Report / Analysis Report
 
 <img width="1206" height="560" alt="AI_Resume_Project2" src="https://github.com/user-attachments/assets/80781be7-55bd-4e67-9081-a9c80528920f" />
 
+LIVE LINK: https://ai-resume-scrapper.vercel.app/
+
 🛠️ Tech Stack
 
 FRONTEND: React, BootStrap
